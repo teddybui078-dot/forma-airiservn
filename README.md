@@ -12,7 +12,7 @@ Built for Lotushacks x Google Vietnam Community.
 4. **Joint Math & DTW Engine** calculates joint angles and compares timing against the expert ghost using Dynamic Time Warping.
 5. **Gemini Analysis Brain** turns joint angle deltas into a biomechanical root cause.
 6. **Gemini Voice Coach** converts the root cause into a 5-word coaching cue.
-7. **Fish Audio TTS** speaks the cue out loud to the athlete.
+7. **OpenAI TTS** speaks the cue out loud to the athlete.
 8. **Google Workspace CLI (gws)** appends session metrics and error logs to Google Sheets.
 
 The expert reference "ghost" is landmark data, not video - it ships as a static JSON asset in the repo, no backend required.
@@ -27,7 +27,7 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full pipeline breakdo
 | 3D rendering | Three.js |
 | Math engine | TypeScript + custom DTW |
 | Biomechanical analysis | Gemini 2.5 Flash API |
-| Voice synthesis | Fish Audio API |
+| Voice synthesis | OpenAI TTS API |
 | Frontend | Next.js (App Router) + TypeScript |
 | Styling | Tailwind CSS + Lucide icons |
 | Logging | Google Workspace CLI (gws) |
@@ -53,7 +53,7 @@ src/
     render/       Three.js ghost overlay scene
     motion/       Joint angle math + DTW alignment engine
     ai/           Gemini client (analysis + voice coach)
-    tts/          Fish Audio client
+    tts/          OpenAI client
     reference/    Static reference ghost data loader
     sheets/       gws session logging
   types/          Shared TypeScript types

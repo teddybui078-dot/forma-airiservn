@@ -12,7 +12,7 @@ What the Forma demo shows, end to end, in front of judges.
    - The ghost overlay highlights the offending joint in red (stage 3).
    - Form score visibly drops with a trend-down indicator.
    - The AI Insight card populates with the Gemini root-cause explanation (stage 5).
-   - The bottom coaching bar shows the 5-word cue (stage 6) and speaks it out loud via Fish Audio (stage 7) within ~1-2 seconds of the rep finishing.
+   - The bottom coaching bar shows the 5-word cue (stage 6) and speaks it out loud via OpenAI (stage 7) within ~1-2 seconds of the rep finishing.
 5. **Point at the Sheet Sync badge** and flip to the Google Sheet already open in another tab - the row for that rep is there (stage 8-9).
 6. **Close on the fix**: perform the rep again correcting the cue ("push knee out"), show the score recovering and the row turning green again.
 
@@ -33,11 +33,11 @@ That's the whole story: *the app watches you, tells you what's wrong, says it ou
 - **9:16 mobile layout** - toggle exists, not part of the walkthrough.
 - **Accounts/auth, multi-user, team invite** - sidebar items are present but are not part of the story.
 - **Historical trend charts, drill library ("View Drill" button)** - visible as UI, not wired to real data; don't click through expecting content.
-- **Error recovery narration** - if MediaPipe mistracks or Gemini/Fish Audio latency spikes, don't debug live; cut to the fallback clip instead of explaining the stack trace.
+- **Error recovery narration** - if MediaPipe mistracks or Gemini/OpenAI latency spikes, don't debug live; cut to the fallback clip instead of explaining the stack trace.
 
 ## Fallback plan
 
-Keep a **pre-recorded screen capture** of one full successful golden-path run (steps 2-6 above) queued and ready to play if the venue wifi kills the Gemini/Fish Audio calls or the webcam misbehaves. Practice the live version enough that the fallback is a last resort, not the plan.
+Keep a **pre-recorded screen capture** of one full successful golden-path run (steps 2-6 above) queued and ready to play if the venue wifi kills the Gemini/OpenAI calls or the webcam misbehaves. Practice the live version enough that the fallback is a last resort, not the plan.
 
 ## Judging narrative
 

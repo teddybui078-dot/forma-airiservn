@@ -19,7 +19,7 @@ This is the interface boundary between Forma's modules. If everyone builds again
 | 3. Joint math + classifier | `src/lib/motion/*.ts` | `computeJointAngles()`, `dtw()`, `computeAngleDeltas()`, `classifyForm()` | `PoseFrame` (user + reference) | `FormClassification` (`src/types/analysis.ts`) |
 | 4. Analysis Brain | `src/lib/ai/analysisBrain.ts` + `POST /api/analyze` | `analyzeForm(classification)` | `FormClassification` | root cause `string` |
 | 5. Voice Coach + integration loop | `src/lib/ai/coach.ts` + `POST /api/coach`, `src/components/analysis/PoseOverlay.tsx` | `generateCoachingCue(rootCause)` | root cause `string` | `CoachingCue` (`src/types/coaching.ts`) |
-| 6. Fish Audio TTS | `src/lib/tts/fishAudio.ts` + `POST /api/speak` | `synthesizeSpeech(text)` | cue `string` | `ArrayBuffer` (mp3) |
+| 6. OpenAI TTS | `src/lib/tts/openaiVoice.ts` + `POST /api/speak` | `synthesizeSpeech(text)` | cue `string` | `ArrayBuffer` (mp3) |
 | 7. Sheets (logs) | `src/lib/sheets/logSession.ts` + `POST /api/session` | `logSessionToSheet()` | `SessionLog` (`src/types/session.ts`) | a row appended via `gws` |
 
 There is no backend/storage track. The reference ghost is landmark data, not photos - it ships as a static JSON asset (`src/data/reference/*.json`) read by `src/lib/reference/referenceGhost.ts`. Sheets is the only persistence track, and it only logs finished-session metrics - it doesn't touch any reference data.

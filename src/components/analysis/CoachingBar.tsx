@@ -20,7 +20,7 @@ export function CoachingBar({ cue }: { cue?: CoachingCue }) {
       </div>
       <div className="flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant/20">
         <AudioWaveform size={14} className="text-on-surface-variant" />
-        <span className="font-data-mono text-on-surface-variant text-[11px]">Fish Audio</span>
+        <span className="font-data-mono text-on-surface-variant text-[11px]">OpenAI Voice</span>
       </div>
     </div>
   );
