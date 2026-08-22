@@ -9,6 +9,7 @@
 
 import { useEffect, useRef } from "react";
 import type { PoseFrame } from "@/types/pose";
+import { createPoseLandmarker, type PoseLandmarkerHandle } from "@/lib/pose/landmarker";
 
 export function CameraFeed({
   source,
@@ -20,8 +21,50 @@ export function CameraFeed({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // TODO: getUserMedia() for "live", file input playback for "upload";
-    // start createPoseLandmarker() and call onFrame() per detected frame.
+    if (source !== "live") return;
+
+    let cancelled = false;
+    let stream: MediaStream | null = null;
+    let handle: PoseLandmarkerHandle | null = null;
+    let rafId: number | null = null;
+
+    async function start() {
+      stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (cancelled) {
+        stream.getTracks().forEach((t) => t.stop());
+        return;
+      }
+      const video = videoRef.current;
+      if (!video) return;
+      video.srcObject = stream;
+      await video.play();
+
+      handle = await createPoseLandmarker();
+      if (cancelled) {
+        handle.close();
+        return;
+      }
+
+      const loop = () => {
+        if (cancelled || !handle || !video) return;
+        const frame = handle.detectForVideo(video, performance.now());
+        if (frame) {
+          console.log("[CameraFeed] detected PoseFrame", frame);
+          onFrame?.(frame);
+        }
+        rafId = requestAnimationFrame(loop);
+      };
+      rafId = requestAnimationFrame(loop);
+    }
+
+    start();
+
+    return () => {
+      cancelled = true;
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      handle?.close();
+      stream?.getTracks().forEach((t) => t.stop());
+    };
   }, [source, onFrame]);
 
   return (
