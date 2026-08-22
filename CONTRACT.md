@@ -20,7 +20,10 @@ This is the interface boundary between Forma's modules. If everyone builds again
 | 4. Analysis Brain | `src/lib/ai/analysisBrain.ts` + `POST /api/analyze` | `analyzeForm(classification)` | `FormClassification` | root cause `string` |
 | 5. Voice Coach + integration loop | `src/lib/ai/coach.ts` + `POST /api/coach`, `src/components/analysis/PoseOverlay.tsx` | `generateCoachingCue(rootCause)` | root cause `string` | `CoachingCue` (`src/types/coaching.ts`) |
 | 6. Fish Audio TTS | `src/lib/tts/fishAudio.ts` + `POST /api/speak` | `synthesizeSpeech(text)` | cue `string` | `ArrayBuffer` (mp3) |
-| 7. Firebase + Sheets | `src/lib/firebase/*.ts`, `src/lib/sheets/logSession.ts` + `POST /api/session` | `getReferenceGhost()`, `adminDb`, `adminStorage`, `logSessionToSheet()` | `SessionLog` / `ReferenceGhost` (`src/types/session.ts`) | Firestore/Storage docs + a Sheets row via `gws` |
+| 7. Firebase (images) | `src/lib/firebase/*.ts` | `getReferenceGhost()`, `adminDb`, `adminStorage` | `ReferenceGhost` (`src/types/session.ts`) | Firestore/Storage docs for reference ghost images/clips |
+| 8. Sheets (logs) | `src/lib/sheets/logSession.ts` + `POST /api/session` | `logSessionToSheet()` | `SessionLog` (`src/types/session.ts`) | a row appended via `gws` |
+
+Firebase and Sheets are fully independent tracks now - neither file imports the other. Firebase owns storing/serving the reference ghost images/clips; Sheets only logs finished-session metrics. `/api/session` calls `logSessionToSheet()` directly and does not touch Firestore.
 
 `src/lib/ai/geminiClient.ts` (the shared `callGemini()` fetch wrapper) is stable, shared infrastructure - built once, not owned by a track. Change its signature only with both AI-track owners' sign-off.
 
@@ -37,7 +40,7 @@ All routes are in `src/app/api/*/route.ts`. Request/response bodies are the JSON
 | `/api/analyze` | POST | `FormClassification` | `{ rootCause: string }` |
 | `/api/coach` | POST | `{ rootCause: string }` | `CoachingCue` |
 | `/api/speak` | POST | `{ text: string }` | `audio/mpeg` binary |
-| `/api/session` | POST | `SessionLog` | `{ ok: true }` |
+| `/api/session` | POST | `SessionLog` (Sheets logging only) | `{ ok: true }` |
 
 ## Adding a new feature
 

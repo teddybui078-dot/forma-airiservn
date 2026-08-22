@@ -1,5 +1,7 @@
-// Stage 8: read/write expert reference movement vectors ("ghost" arrays)
-// used by src/lib/render/ghostScene.ts and src/lib/motion/compareToGhost.ts.
+// Firebase track: stores and serves the reference "ghost" images/clips
+// (expert reference movements) used by the ghost-overlay and
+// motion-classifier tracks. Sheets logging is a separate track/concern -
+// see src/lib/sheets/.
 
 import { collection, doc, getDoc } from "firebase/firestore";
 import { db } from "./client";
