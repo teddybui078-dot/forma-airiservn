@@ -5,7 +5,6 @@ import { FormErrorsList } from "@/components/analysis/FormErrorsList";
 import { AIInsightCard } from "@/components/analysis/AIInsightCard";
 import { SheetSyncStatus } from "@/components/analysis/SheetSyncStatus";
 import type { FormAnalysis } from "@/types/analysis";
-import type { CoachingCue } from "@/types/coaching";
 
 // Placeholder data shaped like the output of stages 4-6 of the pipeline.
 // Replace with the live FormAnalysis produced by src/lib/motion once the
@@ -23,17 +22,12 @@ const MOCK_ANALYSIS: FormAnalysis = {
   ],
 };
 
-const MOCK_CUE: CoachingCue = {
-  text: "Push your left knee outward!",
-  createdAt: Date.now(),
-};
-
 export default function AnalysisPage() {
   return (
     <>
       <TopBar title="Welcome back, Athlete" subtitle="Squat Analysis Mode" />
       <div className="flex flex-1 gap-8 relative w-full items-start">
-        <VideoStage cue={MOCK_CUE} />
+        <VideoStage />
 
         <div className="w-[320px] flex flex-col gap-6 flex-shrink-0">
           <FormScoreCard score={MOCK_ANALYSIS.formScore} trend={MOCK_ANALYSIS.trend} />
