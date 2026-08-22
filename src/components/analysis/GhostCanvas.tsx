@@ -9,6 +9,7 @@
 
 import { useEffect, useRef } from "react";
 import type { PoseFrame } from "@/types/pose";
+import { createGhostScene, type GhostScene } from "@/lib/render/ghostScene";
 
 export function GhostCanvas({
   referenceFrame,
@@ -18,10 +19,21 @@ export function GhostCanvas({
   errorJoints?: Set<string>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sceneRef = useRef<GhostScene | null>(null);
+
+  useEffect(() => {
+    return () => {
+      sceneRef.current?.dispose();
+      sceneRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     if (!canvasRef.current || !referenceFrame) return;
-    // TODO: createGhostScene(canvasRef.current) once, then .update() per frame.
+    if (!sceneRef.current) {
+      sceneRef.current = createGhostScene(canvasRef.current);
+    }
+    sceneRef.current.update(referenceFrame, errorJoints ?? new Set());
   }, [referenceFrame, errorJoints]);
 
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
