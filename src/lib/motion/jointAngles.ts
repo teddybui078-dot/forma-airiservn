@@ -31,7 +31,8 @@ export function computeJointAngles(frame: PoseFrame): Record<keyof typeof JOINTS
   const { landmarks } = frame;
   const result = {} as Record<keyof typeof JOINTS, number>;
 
-  for (const [name, [a, b, c]] of Object.entries(JOINTS) as [keyof typeof JOINTS, number[]][]) {
+  for (const name of Object.keys(JOINTS) as (keyof typeof JOINTS)[]) {
+    const [a, b, c] = JOINTS[name];
     result[name] = angleBetween(landmarks[a], landmarks[b], landmarks[c]);
   }
 

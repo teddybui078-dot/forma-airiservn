@@ -5,13 +5,16 @@
 
 import type { FaultLabel, FormClassification, JointFeatures } from "@/types/analysis";
 
+// Names match GhostCanvas's JOINT_NAMES (src/lib/render/ghostScene.ts) -
+// MediaPipe's snake_case landmark names, not JointFeatures's camelCase keys.
+// There's no "spine" landmark, so forward_lean highlights shoulders + hips.
 const FAULT_JOINTS: Record<FaultLabel, string[]> = {
   correct: [],
-  shallow: ["leftHip", "rightHip"],
-  forward_lean: ["spine"],
-  knees_caving_in: ["leftKnee", "rightKnee"],
-  heels_off_ground: ["leftAnkle", "rightAnkle"],
-  asymmetric: ["leftKnee", "rightKnee"],
+  shallow: ["left_hip", "right_hip"],
+  forward_lean: ["left_shoulder", "right_shoulder", "left_hip", "right_hip"],
+  knees_caving_in: ["left_knee", "right_knee"],
+  heels_off_ground: ["left_ankle", "right_ankle", "left_heel", "right_heel"],
+  asymmetric: ["left_knee", "right_knee"],
 };
 
 // Rough separating values. squat_features_augmented.csv's per-label column
