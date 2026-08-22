@@ -8,9 +8,10 @@ import type { CoachingCue } from "@/types/coaching";
 
 const ASPECTS = ["16:9", "9:16"] as const;
 
-export function VideoStage({ cue }: { cue?: CoachingCue }) {
+export function VideoStage() {
   const [source, setSource] = useState<"live" | "upload">("live");
   const [aspect, setAspect] = useState<(typeof ASPECTS)[number]>("16:9");
+  const [cue, setCue] = useState<CoachingCue>();
 
   return (
     <div className="flex-1 relative flex flex-col gap-6 h-full">
@@ -54,7 +55,7 @@ export function VideoStage({ cue }: { cue?: CoachingCue }) {
         }`}
       >
         {/* Stage 1: raw webcam/upload frame goes here (getUserMedia -> <video>). */}
-        <PoseOverlay source={source} />
+        <PoseOverlay source={source} onCueChange={setCue} />
         <CoachingBar cue={cue} />
       </div>
     </div>
