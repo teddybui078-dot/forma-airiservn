@@ -1,23 +1,21 @@
 "use client";
 
 /**
- * Stage 1-3 of the pipeline in one surface:
- * - a <video> element for the live camera / uploaded clip
- * - a MediaPipe-driven skeleton overlay (src/lib/pose)
- * - a Three.js ghost mesh rendered on top (src/lib/render)
- *
- * This is a static placeholder shell; the capture/tracking/render loops are
- * wired up in src/lib/pose and src/lib/render and mounted here via refs.
+ * Integration point (coaching-loop track): composes the camera feed,
+ * ghost render, and top status bar. Wires CameraFeed's onFrame into the
+ * motion/classifier pipeline once that track lands - for now, renders the
+ * two layers with no data flowing between them yet.
  */
+
+import { CameraFeed } from "./CameraFeed";
+import { GhostCanvas } from "./GhostCanvas";
+
 export function PoseOverlay({ source }: { source: "live" | "upload" }) {
   return (
     <div className="absolute inset-0">
-      <div className="absolute inset-0 flex items-center justify-center bg-surface-container-high text-on-surface-variant text-[13px]">
-        {source === "live" ? "Camera feed will render here" : "Upload a clip to analyze"}
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60 mix-blend-multiply pointer-events-none" />
+      <CameraFeed source={source} />
+      <GhostCanvas />
 
-      {/* Top status bar */}
       <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none">
         <div className="bg-background/90 backdrop-blur-md text-on-surface px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-sm border border-outline-variant/20">
           <div className="w-2 h-2 rounded-full bg-error animate-pulse" />

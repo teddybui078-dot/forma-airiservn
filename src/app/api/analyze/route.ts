@@ -1,11 +1,11 @@
-// Stage 5 endpoint: joint angle deltas in, biomechanical root cause out.
+// Stage 5 endpoint: a classified fault in, biomechanical root cause out.
 
 import { NextRequest, NextResponse } from "next/server";
-import { analyzeForm } from "@/lib/ai/gemini";
-import type { JointAngleDelta } from "@/types/analysis";
+import { analyzeForm } from "@/lib/ai/analysisBrain";
+import type { FormClassification } from "@/types/analysis";
 
 export async function POST(req: NextRequest) {
-  const { deltas } = (await req.json()) as { deltas: JointAngleDelta[] };
-  const rootCause = await analyzeForm(deltas);
+  const classification = (await req.json()) as FormClassification;
+  const rootCause = await analyzeForm(classification);
   return NextResponse.json({ rootCause });
 }
