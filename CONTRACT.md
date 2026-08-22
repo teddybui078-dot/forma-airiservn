@@ -7,7 +7,7 @@ This is the interface boundary between Forma's modules. If everyone builds again
 - **Own your folder, don't reach into someone else's.** Each track owns a specific set of files (see the worktree table below) with one owner at a time. Import from another track only through the exported function signatures in the contract table - never reach into another track's internals.
 - **Shared types are the contract.** `src/types/*.ts` is the one place two tracks are guaranteed to collide. Don't change a field on an existing type to fit your feature - add a new optional field instead, and flag breaking changes in your PR description so the other in-flight branch can rebase against it.
 - **New pipeline stage = new file, not an edit to an existing one.** Adding stage-4b logic (e.g. a new classifier)? New file in `src/lib/motion/`, not a rewrite of `dtw.ts`.
-- **UI components take data as props, never fetch it themselves.** `src/components/analysis/*` render `FormAnalysis` / `CoachingCue` objects passed in - they don't call Gemini or Firebase directly. This is what lets someone build the UI against `MOCK_ANALYSIS` in `analysis/page.tsx` while someone else builds the real pipeline behind it, in parallel, with zero merge conflicts.
+- **UI components take data as props, never fetch it themselves.** `src/components/analysis/*` render `FormAnalysis` / `CoachingCue` objects passed in - they don't call Gemini directly. This is what lets someone build the UI against `MOCK_ANALYSIS` in `analysis/page.tsx` while someone else builds the real pipeline behind it, in parallel, with zero merge conflicts.
 - **Camera capture and ghost rendering are separate components on purpose.** `CameraFeed.tsx` (video + MediaPipe loop) and `GhostCanvas.tsx` (Three.js render) both mount inside `PoseOverlay.tsx`, but neither touches the other's file. `PoseOverlay.tsx` itself is the coaching-loop track's integration point - only that track edits it.
 
 ## Pipeline stage ownership
@@ -20,10 +20,9 @@ This is the interface boundary between Forma's modules. If everyone builds again
 | 4. Analysis Brain | `src/lib/ai/analysisBrain.ts` + `POST /api/analyze` | `analyzeForm(classification)` | `FormClassification` | root cause `string` |
 | 5. Voice Coach + integration loop | `src/lib/ai/coach.ts` + `POST /api/coach`, `src/components/analysis/PoseOverlay.tsx` | `generateCoachingCue(rootCause)` | root cause `string` | `CoachingCue` (`src/types/coaching.ts`) |
 | 6. Fish Audio TTS | `src/lib/tts/fishAudio.ts` + `POST /api/speak` | `synthesizeSpeech(text)` | cue `string` | `ArrayBuffer` (mp3) |
-| 7. Firebase (images) | `src/lib/firebase/*.ts` | `getReferenceGhost()`, `adminDb`, `adminStorage` | `ReferenceGhost` (`src/types/session.ts`) | Firestore/Storage docs for reference ghost images/clips |
-| 8. Sheets (logs) | `src/lib/sheets/logSession.ts` + `POST /api/session` | `logSessionToSheet()` | `SessionLog` (`src/types/session.ts`) | a row appended via `gws` |
+| 7. Sheets (logs) | `src/lib/sheets/logSession.ts` + `POST /api/session` | `logSessionToSheet()` | `SessionLog` (`src/types/session.ts`) | a row appended via `gws` |
 
-Firebase and Sheets are fully independent tracks now - neither file imports the other. Firebase owns storing/serving the reference ghost images/clips; Sheets only logs finished-session metrics. `/api/session` calls `logSessionToSheet()` directly and does not touch Firestore.
+There is no backend/storage track. The reference ghost is landmark data, not photos - it ships as a static JSON asset (`src/data/reference/*.json`) read by `src/lib/reference/referenceGhost.ts`. Sheets is the only persistence track, and it only logs finished-session metrics - it doesn't touch any reference data.
 
 `src/lib/ai/geminiClient.ts` (the shared `callGemini()` fetch wrapper) is stable, shared infrastructure - built once, not owned by a track. Change its signature only with both AI-track owners' sign-off.
 
@@ -40,7 +39,7 @@ All routes are in `src/app/api/*/route.ts`. Request/response bodies are the JSON
 | `/api/analyze` | POST | `FormClassification` | `{ rootCause: string }` |
 | `/api/coach` | POST | `{ rootCause: string }` | `CoachingCue` |
 | `/api/speak` | POST | `{ text: string }` | `audio/mpeg` binary |
-| `/api/session` | POST | `SessionLog` (Sheets logging only) | `{ ok: true }` |
+| `/api/session` | POST | `SessionLog` | `{ ok: true }` |
 
 ## Adding a new feature
 

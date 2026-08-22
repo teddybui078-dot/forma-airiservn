@@ -1,6 +1,5 @@
 // Sheets track endpoint: a finished session's summary metrics, logged to
-// Google Sheets via gws. Firebase (image/clip storage) is a separate
-// track/concern - see src/lib/firebase/.
+// Google Sheets via gws.
 
 import { NextRequest, NextResponse } from "next/server";
 import { logSessionToSheet } from "@/lib/sheets/logSession";
